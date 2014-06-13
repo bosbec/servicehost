@@ -7,7 +7,6 @@ Getting started
 2. Download the `Bosbec.ServiceHost` package in the NuGet package manager.
 3. Change the content of your Main() method like this:
 
-        ```csharp
         public static void Main()
         {
         	ServiceHost.Create(new StructureMapContainerAdapter())
@@ -15,10 +14,8 @@ Getting started
         		.ServiceFinder(f => f.ServicesInAssemblyOfType<Program>())
         		.Run();
         }
-        ```
 4. Create a new C# file named `TimerService.cs` and paste this content:
 
-        ```csharp
         public class TimerService : IService, IRequireInitialization
         {
         	private System.Timers.Timer _timer;
@@ -44,7 +41,6 @@ Getting started
         		_timer.Stop();
         	}
         }
-        ```
 5. That's it, you're ready to Debug the application and let the magic happen.
 You should see "Ding dong!" all over your screen along with some debugging
 information from the framework itself.
