@@ -15,6 +15,7 @@ Getting started
 				.Run();
 		}
 		```
+
 4. Create a new C# file named `TimerService.cs` and paste this content:
     ```csharp
 		public class TimerService : IService, IRequireInitialization
@@ -43,6 +44,7 @@ Getting started
 			}
 		}
 		```
+
 5. That's it, you're ready to Debug the application and let the magic happen.
    You should see "Ding dong!" all over your screen along with some debugging
 	 information from the framework itself.
