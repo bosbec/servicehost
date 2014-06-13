@@ -1,7 +1,7 @@
 The ServiceHost framework
 =========================
 
-Getting started
+## Getting started
 
 1. Create a new Console project in Visual Studio.
 
