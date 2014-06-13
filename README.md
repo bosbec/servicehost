@@ -4,7 +4,9 @@ The ServiceHost framework
 Getting started
 
 1. Create a new Console project in Visual Studio.
+
 2. Download the `Bosbec.ServiceHost` package in the NuGet package manager.
+
 3. Change the content of your Main() method like this:
 	```csharp
 	public static void Main()
