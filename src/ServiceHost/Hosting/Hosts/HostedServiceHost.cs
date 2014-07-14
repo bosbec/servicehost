@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DaemonHost.cs" company="Bosbec AB">
+// <copyright file="HostedServiceHost.cs" company="Bosbec AB">
 //   Copyright © Bosbec AB 2014
 // </copyright>
 // <summary>
-//   Defines the DaemonHost type.
+//   Defines the HostedServiceHost type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,14 +11,26 @@ namespace Bosbec.ServiceHost.Hosting.Hosts
 {
     using System;
 
-    using Mono.Unix;
-    using Mono.Unix.Native;
+    using Bosbec.ServiceHost.Logging;
 
     /// <summary>
-    /// Defines the DaemonHost type.
+    /// Defines the HostedServiceHost type.
     /// </summary>
-    public class DaemonHost : IHost
+    public class HostedServiceHost : IHost
     {
+        /// <summary>
+        /// The log.
+        /// </summary>
+        private static ILog _log;
+
+        /// <summary>
+        /// Initializes static members of the <see cref="HostedServiceHost"/> class.
+        /// </summary>
+        static HostedServiceHost()
+        {
+            LogManager.Changed += f => _log = f.GetCurrentClassLogger();
+        }
+
         /// <summary>
         /// Raised when the service is starting.
         /// </summary>
@@ -34,37 +46,17 @@ namespace Bosbec.ServiceHost.Hosting.Hosts
         /// </summary>
         public void Run()
         {
-            OnStarting();
-
-            var signals = new[]
-            {
-                new UnixSignal(Signum.SIGINT),
-                new UnixSignal(Signum.SIGTERM)
-            };
-
-            for (var exit = false; !exit;)
-            {
-                var id = UnixSignal.WaitAny(signals);
-
-                if (id < 0 || id >= signals.Length)
-                {
-                    continue;
-                }
-
-                if (signals[id].IsSet)
-                {
-                    exit = true;
-                }
-            }
-
-            OnStopped();
+            HostedServiceHostCommunicator.Instance.Stopped += (sender, arguments) => OnStopped();
+            HostedServiceHostCommunicator.Instance.Starting += (sender, arguments) => OnStarting();
         }
-        
+
         /// <summary>
         /// Raise the Starting event.
         /// </summary>
         protected virtual void OnStarting()
         {
+            _log.Info("Starting");
+
             var handler = Starting;
 
             if (handler != null)
@@ -78,6 +70,8 @@ namespace Bosbec.ServiceHost.Hosting.Hosts
         /// </summary>
         protected virtual void OnStopped()
         {
+            _log.Info("Stopping");
+
             var handler = Stopped;
 
             if (handler != null)

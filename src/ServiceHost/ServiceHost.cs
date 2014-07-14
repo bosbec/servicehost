@@ -139,6 +139,8 @@ namespace Bosbec.ServiceHost
 
             var host = CreateHost();
 
+            _log.Info("Using the {0} host", host.GetType());
+
             host.Starting += (sender, args) =>
             {
                 _log.Info("Starting all services");
@@ -182,13 +184,17 @@ namespace Bosbec.ServiceHost
         {
             IHost host = null;
 
-            if (ShouldRunAsDaemonOrService())
+            if (IsHosted())
+            {
+                host = new HostedServiceHost();
+            }
+            else if (ShouldRunAsDaemonOrService())
             {
                 if (IsWindows())
                 {
                     host = new WindowsServiceHost();
                 }
-                
+
                 if (IsUnixOrMacOsx())
                 {
                     host = new DaemonHost();
@@ -215,6 +221,17 @@ namespace Bosbec.ServiceHost
             var arguments = Environment.GetCommandLineArgs();
 
             return daemonArguments.Any(arguments.Contains);
+        }
+
+        /// <summary>
+        /// Determine if the service is hosted on the host server.
+        /// </summary>
+        /// <returns>
+        /// <c>true</c> if the service is hosted on the host server; otherwise, <c>false</c>.
+        /// </returns>
+        private static bool IsHosted()
+        {
+            return HostedServiceHostCommunicator.Instance != null;
         }
 
         /// <summary>
@@ -249,7 +266,7 @@ namespace Bosbec.ServiceHost
         {
             foreach (var service in services.OfType<IRequireInitialization>())
             {
-                service.Initliaze();
+                service.Initialize();
             }
         }
 

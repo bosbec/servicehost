@@ -19,7 +19,7 @@
             _timer.Stop();
         }
 
-        public void Initliaze()
+        public void Initialize()
         {
             _timer = new Timer(1000);
             _timer.Elapsed += (sender, args) => OnTick();

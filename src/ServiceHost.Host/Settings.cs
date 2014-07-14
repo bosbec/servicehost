@@ -1,22 +1,24 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="IRequireInitialization.cs" company="Bosbec AB">
+// <copyright file="Settings.cs" company="Bosbec AB">
 //   Copyright © Bosbec AB 2014
 // </copyright>
 // <summary>
-//   Defines the IRequireInitialization type.
+//   Defines the Settings type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Bosbec.ServiceHost
+namespace Bosbec.ServiceHost.Host
 {
+    using Bosbec.ServiceHost.Host.Services.Packages;
+
     /// <summary>
-    /// Defines the IRequireInitialization type.
+    /// Defines the Settings type.
     /// </summary>
-    public interface IRequireInitialization
+    public class Settings
     {
         /// <summary>
-        /// Perform initialization logic.
+        /// Gets or sets the packages.
         /// </summary>
-        void Initialize();
+        public PackagesServiceSettings Packages { get; set; }
     }
 }

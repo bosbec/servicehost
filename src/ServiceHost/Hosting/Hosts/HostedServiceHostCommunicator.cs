@@ -1,9 +1,9 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="DaemonHost.cs" company="Bosbec AB">
+// <copyright file="HostedServiceHostCommunicator.cs" company="Bosbec AB">
 //   Copyright © Bosbec AB 2014
 // </copyright>
 // <summary>
-//   Defines the DaemonHost type.
+//   Defines the HostedServiceHostCommunicator type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -11,13 +11,10 @@ namespace Bosbec.ServiceHost.Hosting.Hosts
 {
     using System;
 
-    using Mono.Unix;
-    using Mono.Unix.Native;
-
     /// <summary>
-    /// Defines the DaemonHost type.
+    /// Defines the HostedServiceHostCommunicator type.
     /// </summary>
-    public class DaemonHost : IHost
+    internal class HostedServiceHostCommunicator : MarshalByRefObject
     {
         /// <summary>
         /// Raised when the service is starting.
@@ -30,36 +27,34 @@ namespace Bosbec.ServiceHost.Hosting.Hosts
         public event EventHandler Stopped;
 
         /// <summary>
-        /// Run the service host.
+        /// Gets the instance.
         /// </summary>
-        public void Run()
+        public static HostedServiceHostCommunicator Instance { get; private set; }
+
+        /// <summary>
+        /// Start the services.
+        /// </summary>
+        public void Start()
         {
             OnStarting();
+        }
 
-            var signals = new[]
-            {
-                new UnixSignal(Signum.SIGINT),
-                new UnixSignal(Signum.SIGTERM)
-            };
-
-            for (var exit = false; !exit;)
-            {
-                var id = UnixSignal.WaitAny(signals);
-
-                if (id < 0 || id >= signals.Length)
-                {
-                    continue;
-                }
-
-                if (signals[id].IsSet)
-                {
-                    exit = true;
-                }
-            }
-
+        /// <summary>
+        /// Stop the services.
+        /// </summary>
+        public void Stop()
+        {
             OnStopped();
         }
-        
+
+        /// <summary>
+        /// Set this instance as the singleton instance.
+        /// </summary>
+        public void SetAsSingletonInstance()
+        {
+            Instance = this;
+        }
+
         /// <summary>
         /// Raise the Starting event.
         /// </summary>
