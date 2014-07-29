@@ -135,8 +135,6 @@ namespace Bosbec.ServiceHost
 
             var services = FindServices();
 
-            InitializeServices(services);
-
             var host = CreateHost();
 
             _log.Info("Using the {0} host", host.GetType());
@@ -257,20 +255,6 @@ namespace Bosbec.ServiceHost
         }
 
         /// <summary>
-        /// Initialize all services.
-        /// </summary>
-        /// <param name="services">
-        /// The services.
-        /// </param>
-        private static void InitializeServices(IEnumerable<IService> services)
-        {
-            foreach (var service in services.OfType<IRequireInitialization>())
-            {
-                service.Initialize();
-            }
-        }
-
-        /// <summary>
         /// Set the default values unless they are already set.
         /// </summary>
         private void SetDefaultValues()
@@ -304,6 +288,11 @@ namespace Bosbec.ServiceHost
                 serviceType =>
                 {
                     var service = _containerAdapter.GetServiceInstance(serviceType);
+                    
+                    if (service is IRequireInitialization)
+                    {
+                        ((IRequireInitialization)service).Initialize();
+                    }
 
                     _containerAdapter.RegisterServiceInstance(serviceType, service);
 
