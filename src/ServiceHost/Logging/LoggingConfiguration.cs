@@ -10,12 +10,23 @@
 namespace Bosbec.ServiceHost.Logging
 {
     using Bosbec.ServiceHost.Logging.Console;
+    using Bosbec.ServiceHost.Logging.File;
 
     /// <summary>
     /// Defines the LoggingConfiguration type.
     /// </summary>
     public class LoggingConfiguration
     {
+        public void File(string path)
+        {
+            Use(new FileLoggerFactory(path));
+        }
+
+        public void File(string path, LogLevel minLevel)
+        {
+            Use(new FileLoggerFactory(path) { MinLevel = minLevel });
+        }
+
         public void Console()
         {
             Use(new ConsoleLoggerFactory(false));

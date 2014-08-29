@@ -1,21 +1,22 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="ConsoleLogger.cs" company="Bosbec AB">
+// <copyright file="FileLogger.cs" company="Bosbec AB">
 //   Copyright © Bosbec AB 2014
 // </copyright>
 // <summary>
-//   Defines the ConsoleLogger type.
+//   Defines the FileLogger type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace Bosbec.ServiceHost.Logging.Console
+namespace Bosbec.ServiceHost.Logging.File
 {
     using System;
+    using System.IO;
     using System.Threading;
 
     /// <summary>
-    /// Defines the ConsoleLogger type.
+    /// Defines the FileLogger type.
     /// </summary>
-    public class ConsoleLogger : ILog
+    public class FileLogger : ILog
     {
         /// <summary>
         /// The type.
@@ -25,10 +26,10 @@ namespace Bosbec.ServiceHost.Logging.Console
         /// <summary>
         /// The factory.
         /// </summary>
-        private readonly ConsoleLoggerFactory _factory;
+        private readonly FileLoggerFactory _factory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ConsoleLogger"/> class.
+        /// Initializes a new instance of the <see cref="FileLogger"/> class.
         /// </summary>
         /// <param name="type">
         /// The type.
@@ -36,7 +37,7 @@ namespace Bosbec.ServiceHost.Logging.Console
         /// <param name="factory">
         /// The factory.
         /// </param>
-        public ConsoleLogger(Type type, ConsoleLoggerFactory factory)
+        public FileLogger(Type type, FileLoggerFactory factory)
         {
             _type = type;
             _factory = factory;
@@ -53,7 +54,7 @@ namespace Bosbec.ServiceHost.Logging.Console
         /// </param>
         public void Debug(string message, params object[] parameters)
         {
-            Log(LogLevel.Debug, message, _factory.Colors.Debug, parameters);
+            Log(LogLevel.Debug, message, parameters);
         }
 
         /// <summary>
@@ -67,7 +68,7 @@ namespace Bosbec.ServiceHost.Logging.Console
         /// </param>
         public void Info(string message, params object[] parameters)
         {
-            Log(LogLevel.Info, message, _factory.Colors.Info, parameters);
+            Log(LogLevel.Info, message, parameters);
         }
 
         /// <summary>
@@ -81,7 +82,7 @@ namespace Bosbec.ServiceHost.Logging.Console
         /// </param>
         public void Warn(string message, params object[] parameters)
         {
-            Log(LogLevel.Warn, message, _factory.Colors.Warn, parameters);
+            Log(LogLevel.Warn, message, parameters);
         }
 
         /// <summary>
@@ -95,7 +96,7 @@ namespace Bosbec.ServiceHost.Logging.Console
         /// </param>
         public void Error(string message, params object[] parameters)
         {
-            Log(LogLevel.Error, message, _factory.Colors.Error, parameters);
+            Log(LogLevel.Error, message, parameters);
         }
 
         /// <summary>
@@ -113,7 +114,7 @@ namespace Bosbec.ServiceHost.Logging.Console
         /// </param>
         public void Error(Exception exception, string message, params object[] parameters)
         {
-            Log(LogLevel.Error, string.Format(message, parameters) + Environment.NewLine + exception, _factory.Colors.Error);
+            Log(LogLevel.Error, string.Format(message, parameters) + Environment.NewLine + exception);
         }
 
         /// <summary>
@@ -125,25 +126,12 @@ namespace Bosbec.ServiceHost.Logging.Console
         /// <param name="message">
         /// The message.
         /// </param>
-        /// <param name="colorSetting">
-        /// The color setting.
-        /// </param>
         /// <param name="parameters">
         /// The parameters.
         /// </param>
-        private void Log(LogLevel level, string message, ConsoleColorSetting colorSetting, params object[] parameters)
+        private void Log(LogLevel level, string message, params object[] parameters)
         {
-            if (_factory.Colored)
-            {
-                using (colorSetting.Enter())
-                {
-                    Write(level, message, parameters);
-                }
-            }
-            else
-            {
-                Write(level, message, parameters);
-            }
+            Write(level, message, parameters);
         }
 
         /// <summary>
@@ -179,7 +167,9 @@ namespace Bosbec.ServiceHost.Logging.Console
                     ? "{0} {1} {2} ({3}): {4}"
                     : "{1} {2} ({3}): {4}";
 
-                Console.WriteLine(format, timeFormat, typeName, levelString, threadName, renderedMessage);
+                var text = string.Format(format, timeFormat, typeName, levelString, threadName, renderedMessage);
+
+                File.AppendAllLines(_factory.Path, new[] { text });
             }
             catch
             {

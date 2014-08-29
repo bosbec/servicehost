@@ -8,7 +8,7 @@
         public static void Main(string[] args)
         {
             ServiceHost.Create(new StructureMapContainerAdapter())
-                .Logging(x => x.ColoredConsole())
+                .Logging(x => x.File("log.txt"))
                 .ServiceFinder(x => x.ServicesInAssemblyOfType<Program>())
                 .Run();
         }

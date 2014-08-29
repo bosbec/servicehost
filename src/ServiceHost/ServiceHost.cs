@@ -216,6 +216,13 @@ namespace Bosbec.ServiceHost
         /// </returns>
         private static bool ShouldRunAsDaemonOrService()
         {
+            var parentProcess = ParentProcessUtilities.GetParentProcess();
+
+            if (parentProcess != null && parentProcess.ProcessName == "services")
+            {
+                return true;
+            }
+
             var daemonArguments = new[] { "-d", "--daemon", "/d", "/daemon", "-s", "--service", "/s", "/service" };
 
             var arguments = Environment.GetCommandLineArgs();

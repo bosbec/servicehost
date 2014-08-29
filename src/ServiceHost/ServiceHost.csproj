@@ -44,11 +44,14 @@
     <Compile Include="DefaultContainerAdapter.cs" />
     <Compile Include="Hosting\Hosts\HostedServiceHost.cs" />
     <Compile Include="Hosting\Hosts\HostedServiceHostCommunicator.cs" />
+    <Compile Include="Hosting\ParentProcessUtilities.cs" />
     <Compile Include="Logging\AbstractLoggerFactory.cs" />
     <Compile Include="Logging\Console\ConsoleColorSetting.cs" />
     <Compile Include="Logging\Console\ConsoleLogger.cs" />
     <Compile Include="Logging\Console\ConsoleLoggerFactory.cs" />
     <Compile Include="Logging\Console\ConsoleLoggingColors.cs" />
+    <Compile Include="Logging\File\FileLogger.cs" />
+    <Compile Include="Logging\File\FileLoggerFactory.cs" />
     <Compile Include="Logging\ILog.cs" />
     <Compile Include="Logging\ILoggerFactory.cs" />
     <Compile Include="Logging\LoggingConfiguration.cs" />
