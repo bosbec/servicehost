@@ -72,6 +72,14 @@ namespace Bosbec.ServiceHost.Hosting.Hosts
         private class WindowsServiceWrapper : ServiceBase
         {
             /// <summary>
+            /// Initializes a new instance of the <see cref="WindowsServiceWrapper"/> class.
+            /// </summary>
+            public WindowsServiceWrapper()
+            {
+                CanShutdown = true;
+            }
+
+            /// <summary>
             /// Raised when the service is started.
             /// </summary>
             public event EventHandler Started;
@@ -107,6 +115,21 @@ namespace Bosbec.ServiceHost.Hosting.Hosts
             /// (SCM). Specifies actions to take when a service stops running.
             /// </summary>
             protected override void OnStop()
+            {
+                var handler = Stopped;
+
+                if (handler != null)
+                {
+                    handler(this, EventArgs.Empty);
+                }
+            }
+
+            /// <summary>
+            /// When implemented in a derived class, executes when the system is
+            /// shutting down. Specifies what should occur immediately prior to
+            /// the system shutting down.
+            /// </summary>
+            protected override void OnShutdown()
             {
                 var handler = Stopped;
 
